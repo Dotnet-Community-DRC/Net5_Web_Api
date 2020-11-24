@@ -10,9 +10,12 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NetCoreWeb.Api.Models;
 
 namespace NetCoreWeb.Api
@@ -43,6 +46,24 @@ namespace NetCoreWeb.Api
                 opt.Password.RequiredLength = 6;
             }).AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = "http://sudidav.io",
+                    ValidIssuer = "http://sudidav.io",
+                    RequireExpirationTime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("This is my key for the Encryption")),
+                    ValidateIssuerSigningKey = true
+                };
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
