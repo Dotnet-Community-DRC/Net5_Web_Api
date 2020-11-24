@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NetCoreWeb.Api.Models;
+using NetCoreWeb.Api.Services;
 
 namespace NetCoreWeb.Api
 {
@@ -64,6 +65,8 @@ namespace NetCoreWeb.Api
                     ValidateIssuerSigningKey = true
                 };
             });
+
+            services.AddScoped<IUserService, UserService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
